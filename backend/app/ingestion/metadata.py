@@ -1,0 +1,1 @@
+"""Ingestion metadata extraction and normalization."""

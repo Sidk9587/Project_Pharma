@@ -1,0 +1,69 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.dart_tool/
+.packages
+build/
+coverage/   
+
+# -------------------------------------------------
+
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Python test/cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+**/build/
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local databases, logs and temporary files
+*.log
+*.sqlite
+*.sqlite3
+tmp/
+temp/
+
+# Environment files and virtual environments
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+**/.venv/
+**/venv/
+
+# Local vector database
+backend/chroma_db/
+
+# Uploaded documents
+backend/uploads/
+
+# Local test documents
+backend/sample.pdf
