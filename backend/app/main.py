@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.api.v1.router import api_router
+from app.rag.llm import provider_status
 
 
 
@@ -24,6 +25,14 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+@app.get("/api/v1/settings/provider")
+def get_provider_settings():
+    try:
+        return provider_status()
+    except ValueError as exc:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 @app.get("/health")
 async def health_check():

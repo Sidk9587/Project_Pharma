@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../core/constants/app_constants.dart';
-import 'router.dart';
+import '../features/chat/bloc/chat_bloc.dart';
+import '../features/chat/data/chat_websocket.dart';
+import 'pharma_shell.dart';
 import 'theme.dart';
 
-class AppShell extends StatelessWidget {
-  const AppShell({super.key});
+class PharmaApp extends StatelessWidget {
+  const PharmaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppConstants.appName,
+      debugShowCheckedModeBanner: false,
+      title: 'Pharma AI',
       theme: AppTheme.light,
-      initialRoute: AppRoutes.home,
-      routes: {
-        AppRoutes.home: (context) => const Scaffold(
-              body: Center(child: Text(AppConstants.appName)),
-            ),
-      },
+      home: BlocProvider(
+        create: (_) => ChatBloc(webSocket: ChatWebSocket()),
+        child: const PharmaShell(),
+      ),
     );
   }
 }

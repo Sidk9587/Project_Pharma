@@ -5,6 +5,7 @@ from app.api.v1 import chat_ws
 from app.api.v1 import documents
 from app.api.v1 import conversations
 from app.api.v1 import sources
+from app.api.v1 import exports
 
 
 api_router = APIRouter(
@@ -26,3 +27,4 @@ api_router.include_router(
 
 api_router.include_router(conversations.router)
 api_router.include_router(sources.router)
+api_router.include_router(exports.router)

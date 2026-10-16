@@ -11,6 +11,7 @@ from app.database.conversation_repository import (
 )
 from app.database.database import get_db
 from app.rag.streaming import prepare_stream, stream_tokens
+from app.rag.llm import ProviderConfigurationError
 from app.schemas.chat import ChatRequest
 
 
@@ -44,6 +45,9 @@ async def chat_websocket(websocket: WebSocket, db: Session = Depends(get_db)):
                         continue
                 else:
                     conversation = create_conversation(db, title=request.question[:255])
+            except ProviderConfigurationError as exc:
+                db.rollback()
+                await websocket.send_json({"type": "error", "message": str(exc)})
             except Exception:
                 db.rollback()
                 await websocket.send_json({"type": "error", "message": "Conversation could not be loaded."})
@@ -96,6 +100,7 @@ async def chat_websocket(websocket: WebSocket, db: Session = Depends(get_db)):
                     conversation=conversation,
                     role="assistant",
                     content=answer,
+                    sources=sources,
                 )
                 await websocket.send_json({"type": "complete"})
             except WebSocketDisconnect:

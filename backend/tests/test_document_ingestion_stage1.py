@@ -123,10 +123,27 @@ class DocumentIngestionTests(unittest.TestCase):
         delete_record.assert_called_once()
 
     def test_vector_cleanup_is_scoped_by_document_id(self):
-        store = SimpleNamespace(delete=Mock())
-        with patch.object(vector_store, "get_vector_store", return_value=store):
-            vector_store.delete_document_vectors(document_id="doc-a")
-        store.delete.assert_called_once_with(where={"document_id": "doc-a"})
+        from tempfile import TemporaryDirectory
+        from chromadb import PersistentClient
+
+        with TemporaryDirectory() as directory:
+            client = PersistentClient(path=directory)
+            try:
+                collection = client.create_collection("pharma_documents")
+                collection.add(
+                    ids=["doc-a-chunk", "doc-b-chunk"],
+                    embeddings=[[0.1, 0.2], [0.2, 0.3]],
+                    documents=["a", "b"],
+                    metadatas=[{"document_id": "doc-a"}, {"document_id": "doc-b"}],
+                )
+                with patch.object(vector_store, "CHROMA_PATH", directory), patch.object(
+                    vector_store, "PersistentClient", return_value=client
+                ):
+                    vector_store.delete_document_vectors(document_id="doc-a")
+                self.assertEqual(collection.count(), 1)
+                self.assertEqual(collection.get(include=["metadatas"])["metadatas"][0]["document_id"], "doc-b")
+            finally:
+                client._system.stop()
 
     def test_websocket_streaming_event_protocol_regression(self):
         async def fake_stream(_):

@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, Field
+from typing import Any
 
 
 class ConversationCreate(BaseModel):
@@ -14,6 +15,7 @@ class ConversationMessage(BaseModel):
     role: str
     content: str
     created_at: datetime
+    sources: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class ConversationSummary(BaseModel):

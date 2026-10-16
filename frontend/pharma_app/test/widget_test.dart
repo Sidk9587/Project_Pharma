@@ -1,30 +1,33 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:pharma_app/main.dart';
+import 'package:pharma_app/features/chat/bloc/chat_state.dart';
+import 'package:pharma_app/features/chat/presentation/message_bubble.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('assistant answer renders its source citation', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: MessageBubble(
+            message: ChatMessage(
+              text: 'The retention period is seven years.',
+              isUser: false,
+              sources: const [
+                {
+                  'source': 'Records Policy.pdf',
+                  'page_number': 4,
+                  'url': 'https://example.org/policy',
+                },
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('The retention period is seven years.'), findsOneWidget);
+    expect(find.text('Sources'), findsOneWidget);
+    expect(find.textContaining('Records Policy.pdf · p. 4'), findsOneWidget);
+    expect(find.textContaining('https://example.org/policy'), findsOneWidget);
   });
 }

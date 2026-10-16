@@ -1,11 +1,11 @@
 {
-    "name": "pharma_app",
-    "short_name": "pharma_app",
+    "name": "Pharma AI Knowledge Assistant",
+    "short_name": "Pharma AI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F9F8",
+    "theme_color": "#116B63",
+    "description": "A controlled AI knowledge assistant for approved pharmaceutical and enterprise documents.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

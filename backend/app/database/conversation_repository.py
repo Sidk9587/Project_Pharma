@@ -48,6 +48,7 @@ def save_message(
     conversation: Conversation,
     role: str,
     content: str,
+    sources: list[dict] | None = None,
 ) -> Message:
     if role not in {"user", "assistant"}:
         raise ValueError("Message role must be user or assistant.")
@@ -65,6 +66,7 @@ def save_message(
         conversation_id=conversation.id,
         role=role,
         content=content,
+        sources=sources or [],
         created_at=now,
     )
     db.add(message)

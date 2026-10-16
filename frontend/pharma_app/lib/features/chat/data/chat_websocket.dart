@@ -2,29 +2,23 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../../core/constants/api_constants.dart';
 
 class ChatWebSocket {
   WebSocketChannel? _channel;
   String? _conversationId;
 
-  Stream<Map<String, dynamic>>? get messages =>
-      _channel?.stream.map(
-        (event) {
-          final message = jsonDecode(event as String) as Map<String, dynamic>;
-          if (message['type'] == 'status' &&
-              message['conversation_id'] is String) {
-            _conversationId = message['conversation_id'] as String;
-          }
-          return message;
-        },
-      );
+  Stream<Map<String, dynamic>>? get messages => _channel?.stream.map((event) {
+    final message = jsonDecode(event as String) as Map<String, dynamic>;
+    if (message['type'] == 'status' && message['conversation_id'] is String) {
+      _conversationId = message['conversation_id'] as String;
+    }
+    return message;
+  });
 
-  void connect() {
-    _channel = WebSocketChannel.connect(
-      Uri.parse(
-        'ws://127.0.0.1:8000/api/v1/chat/ws',
-      ),
-    );
+  void connect({String? conversationId}) {
+    _channel = WebSocketChannel.connect(ApiConstants.webSocketUri);
+    _conversationId = conversationId;
   }
 
   void sendQuestion(String question) {
@@ -35,8 +29,7 @@ class ChatWebSocket {
     _channel!.sink.add(
       jsonEncode({
         'question': question,
-        if (_conversationId != null)
-          'conversation_id': _conversationId,
+        if (_conversationId != null) 'conversation_id': _conversationId,
       }),
     );
   }

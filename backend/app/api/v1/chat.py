@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.rag.chain import ask_question
+from app.rag.llm import ProviderConfigurationError
 from app.schemas.chat import (
     ChatRequest,
     ChatResponse,
@@ -58,6 +59,8 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
             sources=sources,
         )
 
+    except ProviderConfigurationError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception:
 
         raise HTTPException(
